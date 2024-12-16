@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!-- link application.properties file -->
+    <context:property-placeholder location="application.properties"/>
+
+
+    <!-- Passing values from .properties to the class -->
+
+    <!--    link with constructor args  -->
+    <bean id="databaseBean"
+          class="DatabaseUtil"
+          init-method="connectedToDatabase"
+          destroy-method="disconnectedFromDatabase">
+
+        <constructor-arg index="0" value="${database.url}"/>
+        <constructor-arg index="1" value="${database.username}"/>
+        <constructor-arg index="2" value="${database.password}"/>
+        <!--    link by Setter methods
+        <property name="url" value="${database.url}"/>
+        <property name="username" value="${database.username}"/>
+        <property name="password" value="${database.password}"/>
+        -->
+    </bean>
+
+
+    <!-- DI via Constructor -->
+    <bean id="carBean" class="Car">
+        <constructor-arg ref="databaseBean"/>
+    </bean>
+
+
+    <!-- DI via Setter -->
+    <bean id="planeBean" class="Plane">
+        <property name="database" ref="databaseBean"/>
+    </bean>
+</beans>
